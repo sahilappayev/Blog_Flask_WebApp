@@ -24,3 +24,8 @@ class NullableDateField(DateField):
             except ValueError:
                 self.data = None
                 raise ValueError(self.gettext('Not a valid date value'))
+
+
+class LoginForm(Form):
+    username = StringField('Enter username')
+    password = PasswordField('Enter password')

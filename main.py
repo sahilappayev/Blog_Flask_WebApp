@@ -1,9 +1,10 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
 from passlib.hash import bcrypt
-from forms import RegisterForm
-from db import insert
+from forms import RegisterForm, LoginForm
+from db import insert, user_login
 
 app = Flask(__name__)
+app.secret_key = 'myblogsite'
 
 # index page
 @app.route("/")
@@ -24,11 +25,25 @@ def register():
         print("birthday :  ", age)
 
         insert(name=name, surname=surname, age=age, username=username,email=email,password=password)
-
-        return redirect(url_for("index"))
+        
+        return redirect(url_for("login"))
     else:
         return render_template("register.html", form = form)
 
+# login page
+@app.route("/login", methods = ["GET", "POST"] )
+def login():
+    form = LoginForm(request.form)
+    if request.method == "POST" and form.validate():
+        username = form.username.data
+        password = form.password.data
+        result = user_login(username, password)
+        if result:
+            return redirect(url_for('index'))
+        else:
+            return redirect(url_for('login'))
+    else:
+        return render_template('login.html', form = form)
 
 # abou page
 @app.route("/about")
