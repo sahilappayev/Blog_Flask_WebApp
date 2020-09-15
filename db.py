@@ -25,24 +25,22 @@ def connection():
     return con
 
 # Inset user
-def insert(name, surname, age, username, email, password):
+def insert_user(name, surname, age, username, email, password):
     try:
         conn = connection()
         with conn.cursor() as cursor:
             # Create table if not exists
             sqlQuery = '''CREATE TABLE IF NOT EXISTS `user` (
-                                            `id` int(11) NOT NULL AUTO_INCREMENT,
-                                            `name` varchar(255) NOT NULL,
-                                            `surname` varchar(255) NOT NULL,
-                                            `age` date DEFAULT NULL,
-                                            `email` varchar(255) NOT NULL,
-                                            `username` varchar(50) NOT NULL,
-                                            `password` varchar(255) NOT NULL,
-                                            PRIMARY KEY (`id`)
-                                            ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8'''
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+                        `surname` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+                        `age` date NULL DEFAULT NULL,
+                        `email` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+                        `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+                        `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+                        PRIMARY KEY (`id`) USING BTREE
+                        ) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic'''
             cursor.execute(sqlQuery)
-
-            print(cursor)
 
             query = "INSERT INTO `user` (`name`, `surname`, `age`, `username`, `email`, `password`) VALUES (%s, %s, %s, %s, %s, %s)"
             print("Args:  ",(name, surname, age, username, email, password))
@@ -75,3 +73,23 @@ def user_login(username, password):
 
     finally:
         conn.close()
+
+# Inset article
+def insert_article():
+    try:
+        conn = connection()
+        with conn.cursor() as cursor:
+            # Create table if not exists
+            sqlQuery = '''CREATE TABLE IF NOT EXISTS `article` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                        `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+                        `created_date` timestamp(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
+                        `author` int(11) NOT NULL,
+                        PRIMARY KEY (`id`) USING BTREE,
+                        INDEX `author`(`author`) USING BTREE,
+                        CONSTRAINT `author` FOREIGN KEY (`author`) REFERENCES `myblog`.`user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+                        ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic'''
+            cursor.execute(sqlQuery)
+    finally:
+        connection.close()

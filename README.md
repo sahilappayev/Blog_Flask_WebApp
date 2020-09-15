@@ -26,3 +26,5 @@ bcrypt
 cryptography
 
 email-validator
+
+functools

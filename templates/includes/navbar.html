@@ -15,12 +15,20 @@
     </ul>
 
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item active">
+      {% if session['logged_in'] %}
+        <li class="nav-item active">
+        <a class="nav-link" href="/logout"> Log out</a>
+        <li class="nav-item active">
+        <a class="nav-link" href="/dashboard"> Dashboard</a>
+      </li>
+      {% else %}
+        <li class="nav-item active">
         <a class="nav-link" href="/login"> Log in</a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="/register"> Sign up</a>
-      </li>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="/register"> Sign up</a>
+        </li>
+      {% endif %}
     </ul>
   </div>
 </nav>
