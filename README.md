@@ -3,6 +3,10 @@
 
 # Required env
 
+Python 3.x
+
+MySQL
+
 Flask
 
 Flask-MYSQLdb
