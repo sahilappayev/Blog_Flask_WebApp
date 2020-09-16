@@ -2,8 +2,8 @@ from wtforms import Form, StringField, TextAreaField, PasswordField, DateField, 
 import datetime
 
 class RegisterForm(Form):
-    name = StringField("Enrer name", validators=[validators.DataRequired(message="Name must be insert!")])
-    surname = StringField("Enrer surname", validators=[validators.DataRequired(message="Surname must be insert!")])
+    name = StringField("Enter name", validators=[validators.DataRequired(message="Name must be insert!")])
+    surname = StringField("Enter surname", validators=[validators.DataRequired(message="Surname must be insert!")])
     age = DateField("Enter birthdate", format='%m/%d/%Y', validators=[validators.Optional()])
     username = StringField("Enter username", validators=[validators.DataRequired(message="username must be insert!"), validators.Length(min=5)])
     email = StringField("Enter email", validators=[validators.DataRequired(), validators.Email(message="Please, enter a valid email adress.")])
@@ -29,3 +29,7 @@ class NullableDateField(DateField):
 class LoginForm(Form):
     username = StringField('Enter username')
     password = PasswordField('Enter password')
+
+class ArticleForm(Form):
+    title = StringField('Enter article title', validators=[validators.Length(min=5, max=255)])
+    content = TextAreaField('Enter article content', validators=[validators.length(min=5)])

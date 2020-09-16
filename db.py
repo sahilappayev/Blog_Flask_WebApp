@@ -1,5 +1,5 @@
 import pymysql.cursors
-from flask import flash
+from flask import flash, session
 from passlib.hash import bcrypt
 
 # Db configuration
@@ -61,8 +61,12 @@ def user_login(username, password):
             if result > 0:
                 data  = cursor.fetchone()
                 real_password = data['password']
+                session['logged_in'] = False
                 if bcrypt.verify(password, real_password):
                     flash("Successful login!", 'success')
+                    session['logged_in'] = True
+                    session['username'] = username
+                    session['user_id'] = data['id']
                     return True
                 else:
                     flash("Password is incorrect!", 'danger')
@@ -75,7 +79,7 @@ def user_login(username, password):
         conn.close()
 
 # Inset article
-def insert_article():
+def insert_article(title, content, author):
     try:
         conn = connection()
         with conn.cursor() as cursor:
@@ -84,12 +88,17 @@ def insert_article():
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                         `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-                        `created_date` timestamp(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
+                        `created_date` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                         `author` int(11) NOT NULL,
                         PRIMARY KEY (`id`) USING BTREE,
                         INDEX `author`(`author`) USING BTREE,
                         CONSTRAINT `author` FOREIGN KEY (`author`) REFERENCES `myblog`.`user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
                         ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic'''
             cursor.execute(sqlQuery)
+
+            query = 'INSERT INTO article (title, content, author) VALUES (%s, %s, %s)'
+            cursor.execute(query, (title, content, author))
+            conn.commit()
+            flash("Process complete successfully!", 'success')
     finally:
-        connection.close()
+        conn.close()
