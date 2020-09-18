@@ -2,10 +2,74 @@
 
 {% block body %}
 <h3 style ='text-align: center '>Dashboard</h3><hr>
-<small> Welcome, {{session['username']}}! </small>
+<h4> Welcome, {{session['user']}}! </h4>
 <hr>
 
 <a href="/addarticle" class="btn btn-danger"> Add Article </a>
 
+{% if articles%}
+<br><br>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">No</th>
+      <th scope="col">Title</th>
+      <th scope="col">Date</th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for article in articles %}
+    <tr>
+        <th scope="row">{{article.id}}</th>
+        <td>{{article.title}}</td>
+        <td>{{article.created_date}}</td>
+        <td>
+        <a href="/edit/{{article.id}}" class="btn btn-secondary">
+            <i class="fas fa-edit"></i>
+        </a>
+        </td>
+        <td>
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-trash-alt"></i></button>
+        </td>
+
+        <!-- Delete Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h3>Are you sure to delete {{article.title}}?</h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                        <form action="/delete/{{article.id}}" method="post">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% else %}
+    <div class = 'alert alert-danger'>
+        There in no any article in the system!
+    </div>
+{% endif %}
+
 
 {% endblock body %}
+
+

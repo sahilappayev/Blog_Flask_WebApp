@@ -1,7 +1,7 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
 from passlib.hash import bcrypt
 from forms import RegisterForm, LoginForm, ArticleForm
-from db import insert_user, user_login, insert_article
+from db import insert_user, user_login, insert_article, select_articles, select_articles_by_outhor
 from functools import wraps
 
 app = Flask(__name__)
@@ -70,7 +70,11 @@ def logout():
 @app.route("/dashboard", methods=['GET'])
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    articles = select_articles_by_outhor(session['user_id'])
+    if articles:
+        return render_template('dashboard.html', articles = articles)
+    else:
+        return render_template('dashboard.html')
 
 # add article
 @app.route('/addarticle', methods=["GET", "POST"])
@@ -92,10 +96,14 @@ def add_article():
 def about():
     return render_template("about.html")
 
-# article page
-@app.route("/articles/<string:id>")
-def article(id):
-    return 'Article id: ' + id
+# articles page
+@app.route("/articles")
+def article():
+    articles = select_articles()
+    if articles:
+        return render_template('articles.html', articles = articles)
+    else:
+        return render_template('articles.html')
 
 
 if(__name__ == "__main__"):

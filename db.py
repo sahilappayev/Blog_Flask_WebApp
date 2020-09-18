@@ -67,6 +67,7 @@ def user_login(username, password):
                     session['logged_in'] = True
                     session['username'] = username
                     session['user_id'] = data['id']
+                    session['user'] = (data['name'] + ' ' + data['surname'])
                     return True
                 else:
                     flash("Password is incorrect!", 'danger')
@@ -79,7 +80,7 @@ def user_login(username, password):
         conn.close()
 
 # Inset article
-def insert_article(title, content, author):
+def insert_article(title, content, user_id):
     try:
         conn = connection()
         with conn.cursor() as cursor:
@@ -89,16 +90,50 @@ def insert_article(title, content, author):
                         `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                         `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
                         `created_date` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                        `author` int(11) NOT NULL,
+                        `user_id` int(11) NOT NULL,
                         PRIMARY KEY (`id`) USING BTREE,
                         INDEX `author`(`author`) USING BTREE,
-                        CONSTRAINT `author` FOREIGN KEY (`author`) REFERENCES `myblog`.`user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+                        CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `myblog`.`user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
                         ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic'''
             cursor.execute(sqlQuery)
 
-            query = 'INSERT INTO article (title, content, author) VALUES (%s, %s, %s)'
-            cursor.execute(query, (title, content, author))
+            query = 'INSERT INTO article (title, content, user_id) VALUES (%s, %s, %s)'
+            cursor.execute(query, (title, content, user_id))
             conn.commit()
             flash("Process complete successfully!", 'success')
+    finally:
+        conn.close()
+
+# select articles
+
+def select_articles():
+
+    try:
+        conn = connection()
+        with conn.cursor() as cursor:
+            query = 'SELECT DISTINCT A.title, A.content, A.created_date, U.name, U.surname from article A INNER JOIN user U on U.id = A.user_id'
+            result = cursor.execute(query)
+            if result > 0:
+                articles = cursor.fetchall()
+                return articles
+            else:
+                return None
+
+    finally:
+        conn.close()
+
+# select articles by author
+
+def select_articles_by_outhor(user_id):
+    try:
+        conn = connection()
+        with conn.cursor() as cursor:
+            query = 'SELECT * from article A WHERE A.user_id = %s'
+            result = cursor.execute(query, (user_id,))
+            if result > 0:
+                articles = cursor.fetchall()
+                return articles
+            else:
+                return None
     finally:
         conn.close()
