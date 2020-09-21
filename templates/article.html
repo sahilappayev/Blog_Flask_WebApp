@@ -4,8 +4,9 @@
 
 {% if article%}
     <h3 style ='text-align: center'>{{article.title}}</h3><hr>
-    <p class='article-content'> {{article.content|safe}} </p><hr>
-    <span> Added on {{article.created_date}} by {{article.name}} {{article.surname}}</span><br>
+    <p class='article-content'> {{article.content|safe}} </p>
+    <br><br><hr>
+    <strong><span> Added on {{article.created_date}} by {{article.name}} {{article.surname}}</span></strong><br><br><br>
 {% else %}
     <div class = 'alert alert-warning'>
         Not found this article in the system!

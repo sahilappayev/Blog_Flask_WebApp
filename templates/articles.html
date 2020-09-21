@@ -9,7 +9,7 @@
     {% for article in articles %}
         <li class="list-group-item">
             <a href = "article/{{article.id}}"> <h4>{{article.title}}</h4><hr> </a>
-            <span> Added on {{article.created_date}} by {{article.name}} {{article.surname}}</span><br>
+            <strong><span> Added on {{article.created_date}} by {{article.name}} {{article.surname}}</span></strong><br>
         </li>
     {% endfor %}
 </ul>

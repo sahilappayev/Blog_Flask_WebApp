@@ -105,7 +105,6 @@ def insert_article(title, content, user_id):
         conn.close()
 
 # select articles
-
 def select_articles():
 
     try:
@@ -123,7 +122,6 @@ def select_articles():
         conn.close()
 
 # select articles by author
-
 def select_articles_by_outhor(user_id):
     try:
         conn = connection()
@@ -139,7 +137,6 @@ def select_articles_by_outhor(user_id):
         conn.close()
 
 # select article by id
-
 def select_article_by_id(id):
     try:
         conn = connection()
@@ -151,5 +148,25 @@ def select_article_by_id(id):
                 return article
             else:
                 return None
+    finally:
+        conn.close()
+
+# select article by id
+def delete_article_by_id(id):
+    try:
+        conn = connection()
+        user_id = session['user_id']
+        with conn.cursor() as cursor:
+            query = 'SELECT * from article A WHERE A.id = %s AND A.user_id=%s'
+            result = cursor.execute(query, (id, user_id))
+            if result > 0:
+                query2 = 'DELETE from article A WHERE A.id = %s AND A.user_id=%s'
+                cursor.execute(query2, (id,user_id))
+                conn.commit()
+                flash("Process complete successfully!", 'success')
+                return True
+            else:
+                flash("There is no that article or you don`n have permition to do this process!", 'danger')
+                return False
     finally:
         conn.close()
