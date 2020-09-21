@@ -1,7 +1,7 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
 from passlib.hash import bcrypt
 from forms import RegisterForm, LoginForm, ArticleForm
-from db import insert_user, user_login, insert_article, select_articles, select_articles_by_outhor
+from db import insert_user, user_login, insert_article, select_articles, select_articles_by_outhor, select_article_by_id
 from functools import wraps
 
 app = Flask(__name__)
@@ -98,12 +98,21 @@ def about():
 
 # articles page
 @app.route("/articles")
-def article():
+def articles():
     articles = select_articles()
     if articles:
         return render_template('articles.html', articles = articles)
     else:
         return render_template('articles.html')
+
+# article page
+@app.route("/article/<string:id>")
+def article(id):
+    article = select_article_by_id(id)
+    if articles:
+        return render_template('article.html', article = article)
+    else:
+        return render_template('article.html')
 
 
 if(__name__ == "__main__"):

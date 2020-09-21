@@ -31,7 +31,9 @@
         </a>
         </td>
         <td>
-        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-trash-alt"></i></button>
+        <a type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" onclick = "setId({{article.id}}); setTitle({{article.title}})">
+        <i class="fas fa-trash-alt"></i>
+        </a>
         </td>
 
         <!-- Delete Modal -->
@@ -45,11 +47,11 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <h3>Are you sure to delete {{article.title}}?</h3>
+                        <h3>Are you sure to delete <span id="deleteTitle"></span>?</h3>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
-                        <form action="/delete/{{article.id}}" method="post">
+                        <form action="" method="post" id = "deleteId">
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
                     </div>

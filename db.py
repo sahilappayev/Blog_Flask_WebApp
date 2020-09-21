@@ -111,7 +111,7 @@ def select_articles():
     try:
         conn = connection()
         with conn.cursor() as cursor:
-            query = 'SELECT DISTINCT A.title, A.content, A.created_date, U.name, U.surname from article A INNER JOIN user U on U.id = A.user_id'
+            query = 'SELECT DISTINCT A.id, A.title, A.content, A.created_date, U.name, U.surname from article A INNER JOIN user U on U.id = A.user_id'
             result = cursor.execute(query)
             if result > 0:
                 articles = cursor.fetchall()
@@ -133,6 +133,22 @@ def select_articles_by_outhor(user_id):
             if result > 0:
                 articles = cursor.fetchall()
                 return articles
+            else:
+                return None
+    finally:
+        conn.close()
+
+# select article by id
+
+def select_article_by_id(id):
+    try:
+        conn = connection()
+        with conn.cursor() as cursor:
+            query = 'SELECT DISTINCT A.*, U.name, U.surname from article A INNER JOIN user U on U.id = A.user_id WHERE A.id = %s'
+            result = cursor.execute(query, (id,))
+            if result > 0:
+                article = cursor.fetchone()
+                return article
             else:
                 return None
     finally:
