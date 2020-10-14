@@ -1,7 +1,7 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
 from passlib.hash import bcrypt
 from forms import RegisterForm, LoginForm, ArticleForm
-from db import insert_user, user_login, insert_article, select_articles, select_articles_by_outhor, select_article_by_id, delete_article_by_id
+from db import insert_user, user_login, insert_article, select_articles, select_articles_by_outhor,select_article_by_id, select_article_by_id_and_author, delete_article_by_id, update_article_by_id
 from functools import wraps
 
 app = Flask(__name__)
@@ -109,7 +109,7 @@ def articles():
 @app.route("/article/<string:id>")
 def article(id):
     article = select_article_by_id(id)
-    if articles:
+    if article:
         return render_template('article.html', article = article)
     else:
         return render_template('article.html')
@@ -119,10 +119,31 @@ def article(id):
 @login_required
 def delete(id):
     result = delete_article_by_id(id)
-    if articles:
+    if result:
         return redirect(url_for('dashboard'))
     else:
         return redirect(url_for('dashboard'))
+
+# edit article
+@app.route("/edit/<string:id>", methods=["GET", "POST"])
+@login_required
+def edit(id):
+    article = select_article_by_id_and_author(id)
+    if request.method == "GET":
+        if article:
+            form = ArticleForm()
+            form.title.data = article["title"]
+            form.content.data = article['content']
+            return render_template('update_article.html', form = form)
+        else:
+            return redirect(url_for('dashboard'))
+    else:
+        form = ArticleForm(request.form)
+        newTitle = form.title.data
+        newContent = form.content.data
+        result = update_article_by_id(id, newTitle, newContent)
+        return redirect(url_for('dashboard'))
+    
 
 
 if(__name__ == "__main__"):

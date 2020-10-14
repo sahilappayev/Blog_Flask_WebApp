@@ -31,39 +31,35 @@
         </a>
         </td>
         <td>
-        <a href = "/delete/{{article.id}}" class="btn btn-danger">
+        <button type="button" class="btn btn-danger btnDelete"  articletitle="{{article.title}}"  articleid = "{{article.id}}" data-toggle="modal" data-target="#exampleModal">
         <i class="fas fa-trash-alt"></i>
-        </a>
+        </button>
         </td>
-
-        <!-- Delete Modal -->
-        <!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <h3>Are you sure to delete <span id="deleteTitle"></span>?</h3>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
-                        <form action="" method="post" id = "deleteId">
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-
-
     </tr>
     {% endfor %}
   </tbody>
 </table>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3>Are you sure to delete <span id="deleteTitle"></span>?</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                <a type="button"  id ="delete" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% else %}
     <br><br>
@@ -71,6 +67,22 @@
         There in no any article in the system!
     </div>
 {% endif %}
+
+
+<script>
+
+    var btnDlt = document.querySelectorAll(".btnDelete");
+    var spanTitle = document.getElementById("deleteTitle");
+    var dlt = document.getElementById("delete");
+
+    btnDlt.forEach(function(element){
+        element.addEventListener('click', function(){
+            spanTitle.innerHTML = element.getAttribute("articleTitle");
+            dlt.setAttribute("href", ('/delete/'+(element.getAttribute("articleId"))));
+        });
+    });
+
+</script>
 
 
 {% endblock body %}

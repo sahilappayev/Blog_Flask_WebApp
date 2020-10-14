@@ -141,7 +141,7 @@ def select_article_by_id(id):
     try:
         conn = connection()
         with conn.cursor() as cursor:
-            query = 'SELECT DISTINCT A.*, U.name, U.surname from article A INNER JOIN user U on U.id = A.user_id WHERE A.id = %s'
+            query = 'SELECT A.*, U.name, U.surname from article A INNER JOIN user U on U.id = A.user_id WHERE A.id = %s'
             result = cursor.execute(query, (id,))
             if result > 0:
                 article = cursor.fetchone()
@@ -151,7 +151,44 @@ def select_article_by_id(id):
     finally:
         conn.close()
 
-# select article by id
+# select article by id and author
+def select_article_by_id_and_author(id):
+    try:
+        conn = connection()
+        user_id = session['user_id']
+        with conn.cursor() as cursor:
+            query = 'SELECT * from article A WHERE A.id = %s AND A.user_id=%s'
+            result = cursor.execute(query, (id, user_id))
+            if result > 0:
+                article = cursor.fetchone()
+                return article
+            else:
+                flash("There is no that article or you don`t have permition to do this process!", 'danger')
+                return None
+    finally:
+        conn.close()
+
+# update article by id
+def update_article_by_id(id, title, content):
+    try:
+        conn = connection()
+        user_id = session['user_id']
+        with conn.cursor() as cursor:
+            query = 'SELECT * from article A WHERE A.id = %s AND A.user_id=%s'
+            result = cursor.execute(query, (id, user_id))
+            if result > 0:
+                query2 = 'UPDATE article SET title = %s, content = %s WHERE id = %s'
+                cursor.execute(query2, (title, content, id))
+                conn.commit()
+                flash("Process complete successfully!", 'success')
+                return True
+            else:
+                flash("There is no that article or you don`t have permition to do this process!", 'danger')
+                return False
+    finally:
+        conn.close()
+
+# delete article by id
 def delete_article_by_id(id):
     try:
         conn = connection()
@@ -166,7 +203,7 @@ def delete_article_by_id(id):
                 flash("Process complete successfully!", 'success')
                 return True
             else:
-                flash("There is no that article or you don`n have permition to do this process!", 'danger')
+                flash("There is no that article or you don`t have permition to do this process!", 'danger')
                 return False
     finally:
         conn.close()

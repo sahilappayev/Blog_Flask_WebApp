@@ -4,12 +4,13 @@
 
 {% if article%}
     <h3 style ='text-align: center'>{{article.title}}</h3><hr>
+    <!-- safe keyword read html format -->
     <p class='article-content'> {{article.content|safe}} </p>
     <br><br><hr>
     <strong><span> Added on {{article.created_date}} by {{article.name}} {{article.surname}}</span></strong><br><br><br>
 {% else %}
     <div class = 'alert alert-warning'>
-        Not found this article in the system!
+        This article not found in the system!
     </div>
 {% endif %}
 
